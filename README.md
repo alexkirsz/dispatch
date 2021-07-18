@@ -21,7 +21,7 @@ This is a Rust rewrite of [dispatch-proxy](https://github.com/alexkirsz/dispatch
 You'll need Rust version 1.51.0 or later. You can use [rustup](https://rustup.rs/) to install the latest version of the Rust compiler toolchain.
 
 ```
-cargo install dispatch
+cargo install dispatch-proxy
 ```
 
 ## Rationale
