@@ -2,7 +2,7 @@
 
 A SOCKS proxy that balances traffic between network interfaces.
 
-*Works on Mac OS X, Windows and Linux.*
+*Should work on macOS, Windows, and Linux. Only tested on macOS for now.*
 
 This is a Rust rewrite of [dispatch-proxy](https://github.com/alexkirsz/dispatch-proxy), originally written in CoffeeScript and targeting Node.js.
 
