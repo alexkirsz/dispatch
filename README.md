@@ -1,4 +1,4 @@
-# dispatch-proxy
+# dispatch
 
 A SOCKS proxy that balances traffic between network interfaces.
 
