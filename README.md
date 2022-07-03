@@ -24,6 +24,10 @@ You'll need Rust version 1.51.0 or later. You can use [rustup](https://rustup.rs
 cargo install dispatch-proxy
 ```
 
+
+*Note: you need to install [Npcap](https://npcap.com/#download) and copy the appropriate Packet.lib file from the SDK (x86 or x64) to C:\Users\Username\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib in order to build on Windows.*
+
+
 ## Rationale
 
 You often find yourself with multiple unused internet connections—be it 5G mobile hotspot or a free Wi-Fi network—that your system won't let you use alongside your primary one.
