@@ -2,19 +2,19 @@
 
 A SOCKS proxy that balances traffic between network interfaces.
 
-*Should work on macOS, Windows, and Linux. Only tested on macOS for now.*
+_Should work on macOS, Windows, and Linux. Only tested on macOS for now._
 
 This is a Rust rewrite of [dispatch-proxy](https://github.com/alexkirsz/dispatch-proxy), originally written in CoffeeScript and targeting Node.js.
 
 ## Quick links
 
-* [Installation](#installation)
-* [Rationale](#rationale)
-* [Use Cases](#use-cases)
-* [Usage](#usage)
-* [Examples](#examples)
-* [How It Works](#how-it-works)
-* [License](#license)
+- [Installation](#installation)
+- [Rationale](#rationale)
+- [Use Cases](#use-cases)
+- [Usage](#usage)
+- [Examples](#examples)
+- [How It Works](#how-it-works)
+- [License](#license)
 
 ## Installation
 
@@ -24,9 +24,37 @@ You'll need Rust version 1.51.0 or later. You can use [rustup](https://rustup.rs
 cargo install dispatch-proxy
 ```
 
+### On Windows
 
-*Note: you need to install [Npcap](https://npcap.com/#download) and copy the appropriate Packet.lib file from the SDK (x86 or x64) to C:\Users\Username\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib in order to build on Windows.*
+In order to build on Windows, you will need to download the [Npcap SDK](https://npcap.com/#download), and copy the `Packet.lib` file from the SDK to the appropriate rustup toolchain `lib` folder.
 
+In order to find which file to use and where to copy it, run `rustup show`:
+
+```bash
+> rustup show
+
+Default host: aarch64-pc-windows-msvc
+rustup home:  C:\Users\alex\.rustup
+
+stable-aarch64-pc-windows-msvc (default)
+rustc 1.66.1 (90743e729 2023-01-10)
+```
+
+This indicates I should copy `npcap-sdk-1.13\Lib\ARM64\Packet.lib` to `C:\Users\alex\.rustup\toolchains\stable-aarch64-pc-windows-msvc\lib\rustlib\aarch64-pc-windows-msvc\lib\Packet.lib`.
+
+Here are the most common cases:
+
+#### 64-bit Windows (most users)
+
+Copy `npcap-sdk-1.13\Lib\x64\Packet.lib` to `[rustup home]\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib\Packet.lib`.
+
+#### 32-bit Windows
+
+Copy `npcap-sdk-1.13\Lib\Packet.lib` to `[rustup home]\toolchains\stable-i686-pc-windows-msvc\lib\rustlib\i686-pc-windows-msvc\lib\Packet.lib`.
+
+#### ARM64 Windows
+
+Copy `npcap-sdk-1.13\Lib\ARM64\Packet.lib` to `[rustup home]\toolchains\stable-aarch64-pc-windows-msvc\lib\rustlib\aarch64-pc-windows-msvc\lib\Packet.lib`.
 
 ## Rationale
 
@@ -38,11 +66,11 @@ For instance, my first student residence used to provide me with cabled and wire
 
 The possibilities are endless:
 
-* Use it with a download manager or a BitTorrent client, combining multiple connections' bandwidth when downloading single files;
-* Combine as many interfaces as you have access to into a single load-balanced interface;
-* Run different apps on separate interfaces with multiple proxies (e.g. for balancing download/upload);
-* Create a hotspot proxy at home that connects through Ethernet and your 5G card for all your mobile devices;
-* etc.
+- Use it with a download manager or a BitTorrent client, combining multiple connections' bandwidth when downloading single files;
+- Combine as many interfaces as you have access to into a single load-balanced interface;
+- Run different apps on separate interfaces with multiple proxies (e.g. for balancing download/upload);
+- Create a hotspot proxy at home that connects through Ethernet and your 5G card for all your mobile devices;
+- etc.
 
 ## Usage
 
@@ -92,16 +120,19 @@ $ dispatch start -h
 ```
 $ dispatch list
 ```
+
 Lists all available network interfaces.
 
 ```
 $ dispatch start 10.0.0.0 fdaa:bbcc:ddee:0:1:2:3:4
 ```
+
 Dispatch incoming connections to local addresses `10.0.0.0` and `fdaa:bbcc:ddee:0:1:2:3:4`.
 
 ```
 $ dispatch start 10.0.0.0@7 10.0.0.1@3
 ```
+
 Dispatch incoming connections to `10.0.0.0` 7 times out of 10 and to `10.0.0.1` 3 times out of 10.
 
 ## How It Works
