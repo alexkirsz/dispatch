@@ -1,6 +1,6 @@
 # Based on https://github.com/houseabsolute/ubi
 
-name: Tests and release
+name: Build
 on: [push, pull_request]
 env:
   RUST_BACKTRACE: 1
