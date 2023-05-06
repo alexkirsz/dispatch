@@ -223,7 +223,7 @@ dependencies = [
 
 [[package]]
 name = "dispatch-proxy"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "async-trait",
  "color-eyre",
