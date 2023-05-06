@@ -10,4 +10,4 @@ runs:
       run: |
         Invoke-WebRequest -UseBasicParsing https://www.winpcap.org/install/bin/WpdPack_4_1_2.zip -OutFile "${Env:TEMP}\wpd.zip"
         Expand-Archive -LiteralPath "${Env:TEMP}\wpd.zip" -DestinationPath "${Env:TEMP}\wpd"
-        Move-Item -LiteralPath "${Env:TEMP}\wpd\WpdPack\Lib" -Destination lib
+        Get-ChildItem -Path "${Env:TEMP}\wpd\WpdPack\Lib"\* -Recurse | Move-Item -Destination "${Env:LIB}"
