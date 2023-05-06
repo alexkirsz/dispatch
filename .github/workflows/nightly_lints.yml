@@ -34,22 +34,3 @@ jobs:
 
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
-
-  combo:
-    name: Clippy + rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
-
-      - name: Install nightly toolchain
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: nightly
-          components: rustfmt, clippy
-
-      - name: Run cargo fmt
-        run: cargo fmt --all -- --check
-
-      - name: Run cargo clippy
-        run: cargo clippy -- -D warnings
