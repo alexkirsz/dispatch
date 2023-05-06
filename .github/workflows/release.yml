@@ -106,7 +106,7 @@ jobs:
       - name: Install Rust
         run: rustup update 1.67.1 --no-self-update && rustup default 1.67.1
       - name: Install WinPCap Developer Pack
-        uses: actions/winpcap
+        uses: ./.github/actions/winpcap
         if: contains(matrix.os, 'windows')
       - name: Install cargo-dist
         run: ${{ matrix.install-dist }}

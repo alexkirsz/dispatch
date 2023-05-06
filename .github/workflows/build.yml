@@ -37,7 +37,7 @@ jobs:
           key: "v2"
 
       - name: Install WinPCap Developer Pack
-        uses: actions/winpcap
+        uses: ./.github/actions/winpcap
         if: contains(matrix.platform.target, 'windows')
 
       - name: Build
