@@ -96,8 +96,8 @@ jobs:
         run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
         if: contains(matrix.platform.target, 'musl')
 
-      - name: Setup Windows 10 SDK
-        uses: GuillaumeFalourd/setup-windows10-sdk-action@v1.11
+      - name: Install WinPCap Developer Pack
+        uses: actions/winpcap
         if: contains(matrix.platform.target, 'windows')
 
       - name: Build
