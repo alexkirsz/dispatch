@@ -18,6 +18,12 @@ This is a Rust rewrite of [dispatch-proxy](https://github.com/alexkirsz/dispatch
 
 ## Installation
 
+### From pre-built binaries
+
+You can download pre-built binaries for macOS, Windows, and Linux from the [releases page](https://github.com/alexkirsz/dispatch/releases).
+
+### From crates.io
+
 You'll need Rust version 1.51.0 or later. You can use [rustup](https://rustup.rs/) to install the latest version of the Rust compiler toolchain.
 
 ```
