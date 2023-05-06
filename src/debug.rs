@@ -47,7 +47,7 @@ impl PanicMessage for DispatchPanicMessage {
         } else {
             write!(f, "<unknown>")?;
         }
-        write!(f, "\n")?;
+        writeln!(f)?;
 
         if let Some(ref log_path) = *self.log_path.lock().unwrap() {
             writeln!(

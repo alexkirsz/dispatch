@@ -23,7 +23,7 @@ impl FromStr for WeightedAddress {
     type Err = eyre::Report;
 
     fn from_str(src: &str) -> Result<Self> {
-        let mut items = src.split("@");
+        let mut items = src.split('@');
 
         let ip: IpAddr = items.next().unwrap().parse()?;
 
@@ -60,7 +60,7 @@ struct State {
 impl WeightedRoundRobinDispatcherInner {
     fn new(addresses: Vec<WeightedAddress>) -> WeightedRoundRobinDispatcherInner {
         debug_assert!(
-            addresses.len() > 0,
+            !addresses.is_empty(),
             "dispatcher should have at least one address"
         );
 
@@ -86,7 +86,7 @@ impl WeightedRoundRobinDispatcherInner {
         let state = self.select_state(remote_addr)?;
 
         let address = &state.addresses[state.address_idx];
-        let ip = address.ip.clone();
+        let ip = address.ip;
 
         state.count += 1;
         if state.count == usize::from(address.weight) {
@@ -94,7 +94,7 @@ impl WeightedRoundRobinDispatcherInner {
             state.address_idx = (state.address_idx + 1) % state.addresses.len();
         }
 
-        return Ok(ip);
+        Ok(ip)
     }
 
     fn select_state(&mut self, remote_addr: &SocketAddr) -> Result<&mut State> {
@@ -103,7 +103,7 @@ impl WeightedRoundRobinDispatcherInner {
             IpAddr::V6(_) => &mut self.ipv6,
         };
 
-        if state.addresses.len() == 0 {
+        if state.addresses.is_empty() {
             return Err(eyre::eyre!(
                 "Address type mismatch: no configured local address or interface can connect to \
                 remote address `{}` ({}) because the address types are incompatible",

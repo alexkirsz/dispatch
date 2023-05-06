@@ -18,16 +18,16 @@ use tracing::instrument;
 
 use crate::{dispatcher::Dispatch, net::bind_socket};
 
-const HTTP_METHODS: [&'static str; 9] = [
+const HTTP_METHODS: [&str; 9] = [
     "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
 ];
 
 #[instrument]
 fn assert_supports_noauth(handshake: &SocksV5Handshake) -> Result<()> {
-    if let None = handshake
+    if !handshake
         .methods
         .iter()
-        .find(|m| **m == socksv5::v5::SocksV5AuthMethod::Noauth)
+        .any(|m| *m == socksv5::v5::SocksV5AuthMethod::Noauth)
     {
         Err(unsupported_auth_error())
     } else {
@@ -152,7 +152,7 @@ where
 
     #[instrument]
     async fn handle_auth(&mut self, handshake: &SocksV5Handshake) -> Result<()> {
-        assert_supports_noauth(&handshake)?;
+        assert_supports_noauth(handshake)?;
 
         socksv5::v5::write_auth_method(&mut self.writer, socksv5::v5::SocksV5AuthMethod::Noauth)
             .await?;
@@ -267,7 +267,8 @@ where
                 }
                 socksv5::v4::SocksV4Host::Domain(domain) => {
                     let domain = String::from_utf8(domain)?;
-                    let addr = match lookup((domain.as_str(), request.port)).await {
+
+                    match lookup((domain.as_str(), request.port)).await {
                         Ok(addr) => addr,
                         Err(err) => {
                             socksv5::v4::write_request_status(
@@ -279,8 +280,7 @@ where
                             .await?;
                             return Err(err);
                         }
-                    };
-                    addr
+                    }
                 }
             }),
             cmd => {

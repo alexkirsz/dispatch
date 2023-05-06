@@ -15,7 +15,7 @@ pub fn list() {
     for interface in interfaces()
         .into_iter()
         .filter(|interface| !interface.is_loopback())
-        .filter(|interface| interface.ips.len() > 0)
+        .filter(|interface| !interface.ips.is_empty())
     {
         let ips = {
             let mut ips: Vec<_> = interface
