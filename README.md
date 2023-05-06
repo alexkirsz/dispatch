@@ -24,38 +24,6 @@ You'll need Rust version 1.51.0 or later. You can use [rustup](https://rustup.rs
 cargo install dispatch-proxy
 ```
 
-### On Windows
-
-In order to build on Windows, you will need to download the [Npcap SDK](https://npcap.com/#download), and copy the `Packet.lib` file from the SDK to the appropriate rustup toolchain `lib` folder.
-
-In order to find which file to use and where to copy it, run `rustup show`:
-
-```bash
-> rustup show
-
-Default host: aarch64-pc-windows-msvc
-rustup home:  C:\Users\alex\.rustup
-
-stable-aarch64-pc-windows-msvc (default)
-rustc 1.66.1 (90743e729 2023-01-10)
-```
-
-This indicates I should copy `npcap-sdk-1.13\Lib\ARM64\Packet.lib` to `C:\Users\alex\.rustup\toolchains\stable-aarch64-pc-windows-msvc\lib\rustlib\aarch64-pc-windows-msvc\lib\Packet.lib`.
-
-Here are the most common cases:
-
-#### 64-bit Windows (most users)
-
-Copy `npcap-sdk-1.13\Lib\x64\Packet.lib` to `[rustup home]\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib\Packet.lib`.
-
-#### 32-bit Windows
-
-Copy `npcap-sdk-1.13\Lib\Packet.lib` to `[rustup home]\toolchains\stable-i686-pc-windows-msvc\lib\rustlib\i686-pc-windows-msvc\lib\Packet.lib`.
-
-#### ARM64 Windows
-
-Copy `npcap-sdk-1.13\Lib\ARM64\Packet.lib` to `[rustup home]\toolchains\stable-aarch64-pc-windows-msvc\lib\rustlib\aarch64-pc-windows-msvc\lib\Packet.lib`.
-
 ## Rationale
 
 You often find yourself with multiple unused internet connections—be it 5G mobile hotspot or a free Wi-Fi network—that your system won't let you use alongside your primary one.

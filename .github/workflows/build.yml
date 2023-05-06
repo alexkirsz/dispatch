@@ -36,10 +36,6 @@ jobs:
         with:
           key: "v2"
 
-      - name: Install WinPCap Developer Pack
-        uses: ./.github/actions/winpcap
-        if: contains(matrix.platform.target, 'windows')
-
       - name: Build
         uses: houseabsolute/actions-rust-cross@v0
         with:
