@@ -16,7 +16,7 @@ use tokio::{
 };
 use tracing::instrument;
 
-use crate::{dispatcher::Dispatch, net::bind_socket};
+use crate::{dispatcher::{Dispatch, WeightedAddress}, net::bind_socket};
 
 const HTTP_METHODS: [&str; 9] = [
     "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
@@ -36,8 +36,8 @@ fn assert_supports_noauth(handshake: &SocksV5Handshake) -> Result<()> {
 }
 
 #[instrument]
-fn try_bind_socket(addr: IpAddr) -> Result<TcpSocket> {
-    bind_socket(addr).map_err(|err| match err.raw_os_error() {
+fn try_bind_socket(addr: IpAddr, interface_name: String) -> Result<TcpSocket> {
+    bind_socket(addr, interface_name).map_err(|err| match err.raw_os_error() {
         // Can't assign requested address
         Some(49) => eyre::eyre!(err).wrap_err(unaccessible_local_address_error(&addr)),
         _ => eyre::eyre!(err),
@@ -62,7 +62,7 @@ pub struct SocksHandshake<R, W, D>
 where
     R: AsyncRead + Unpin + Debug,
     W: AsyncWrite + Unpin + Debug,
-    D: Dispatch + Debug,
+    D: Dispatch + Debug
 {
     reader: R,
     writer: W,
@@ -133,7 +133,7 @@ where
                     .dispatch(&host)
                     .await
                     .wrap_err_with(dispatch_error)?;
-
+                
                 self.handle_connect_v5(host, local_addr).await
             }
             socksv5::SocksVersion::V4 => {
@@ -212,12 +212,12 @@ where
     async fn handle_connect_v5(
         &mut self,
         address: SocketAddr,
-        local_addr: IpAddr,
+        local_addr: WeightedAddress,
     ) -> Result<TcpStream> {
-        let server_socket = try_bind_socket(local_addr)?;
+        let server_socket = try_bind_socket(local_addr.ip, local_addr.interface)?;
 
         let server_stream = server_socket.connect(address).await;
-
+        
         match server_stream {
             Ok(server_stream) => {
                 socksv5::v5::write_request_status(
@@ -300,9 +300,9 @@ where
     async fn handle_connect_v4(
         &mut self,
         address: SocketAddr,
-        local_addr: IpAddr,
+        local_addr: WeightedAddress
     ) -> Result<TcpStream> {
-        let server_socket = try_bind_socket(local_addr)?;
+        let server_socket = try_bind_socket(local_addr.ip, local_addr.interface)?;
 
         let server_stream = server_socket.connect(address).await;
 

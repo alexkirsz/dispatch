@@ -25,7 +25,7 @@ pub fn list() {
                 .into_iter()
                 .map(|addr| addr.ip())
                 .filter(|addr| !is_local_address(addr))
-                .filter(|addr| bind_socket(*addr).is_ok())
+                .filter(|addr| bind_socket(*addr, "".to_string()).is_ok())
                 .collect();
             addrs.sort_by_key(|addr| addr.is_ipv6());
             addrs
