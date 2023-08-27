@@ -34,7 +34,7 @@ enum Command {
         /// Which port to listen to for connections
         #[structopt(default_value = "1080", long)]
         port: u16,
-        /// The network interface IP addresses to dispatch to, in the form of <address>[@priority]
+        /// The network interface IP addresses to dispatch to, in the form of <address>[@interface][@priority]
         #[structopt(required = true, parse(try_from_str = WeightedAddress::from_str))]
         addresses: Vec<WeightedAddress>,
     },

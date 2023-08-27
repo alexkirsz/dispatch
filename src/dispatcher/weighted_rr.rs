@@ -15,8 +15,9 @@ use super::Dispatch;
 
 #[derive(Clone, Debug)]
 pub struct WeightedAddress {
-    ip: IpAddr,
-    weight: NonZeroUsize,
+    pub ip: IpAddr,
+    pub interface: String,
+    pub weight: NonZeroUsize,
 }
 
 impl FromStr for WeightedAddress {
@@ -26,19 +27,25 @@ impl FromStr for WeightedAddress {
         let mut items = src.split('@');
 
         let ip: IpAddr = items.next().unwrap().parse()?;
+        
+        let interface = match items.next() {
+            Some(iface) => iface,
+            None => "",
+        }.to_string();
 
         let weight = match items.next() {
             Some(priority) => priority.parse()?,
             None => NonZeroUsize::new(1).unwrap(),
         };
 
-        Ok(WeightedAddress { ip, weight })
+        Ok(WeightedAddress { ip, interface, weight })
     }
 }
 
 impl Display for WeightedAddress {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         self.ip.fmt(f)?;
+        f.write_fmt(format_args!("@{}", self.interface))?;
         f.write_fmt(format_args!("@{}", self.weight))?;
         Ok(())
     }
@@ -82,11 +89,10 @@ impl WeightedRoundRobinDispatcherInner {
         }
     }
 
-    fn dispatch(&mut self, remote_addr: &SocketAddr) -> Result<IpAddr> {
+    fn dispatch(&mut self, remote_addr: &SocketAddr) -> Result<WeightedAddress> {
         let state = self.select_state(remote_addr)?;
 
         let address = &state.addresses[state.address_idx];
-        let ip = address.ip;
 
         state.count += 1;
         if state.count == usize::from(address.weight) {
@@ -94,7 +100,7 @@ impl WeightedRoundRobinDispatcherInner {
             state.address_idx = (state.address_idx + 1) % state.addresses.len();
         }
 
-        Ok(ip)
+        Ok(address.clone())
     }
 
     fn select_state(&mut self, remote_addr: &SocketAddr) -> Result<&mut State> {
@@ -139,7 +145,7 @@ impl WeightedRoundRobinDispatcher {
 #[async_trait::async_trait]
 impl Dispatch for WeightedRoundRobinDispatcher {
     #[instrument]
-    async fn dispatch(&self, remote_addr: &SocketAddr) -> Result<IpAddr> {
+    async fn dispatch(&self, remote_addr: &SocketAddr) -> Result<WeightedAddress> {
         let mut dispatcher = self.0.lock().await;
         dispatcher.dispatch(remote_addr)
     }
