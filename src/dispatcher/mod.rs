@@ -4,7 +4,7 @@ use std::net::{IpAddr, SocketAddr};
 
 use eyre::Result;
 
-pub use weighted_rr::{WeightedAddress, WeightedRoundRobinDispatcher};
+pub use weighted_rr::{RawWeightedAddress, WeightedAddress, WeightedRoundRobinDispatcher};
 
 #[async_trait::async_trait]
 pub trait Dispatch {

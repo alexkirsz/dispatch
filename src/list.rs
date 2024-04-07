@@ -1,6 +1,4 @@
-use std::net::IpAddr;
-
-use crate::net::bind_socket;
+use crate::net::get_valid_addresses;
 use network_interface::{NetworkInterface, NetworkInterfaceConfig};
 use owo_colors::OwoColorize;
 use term_table::{
@@ -20,13 +18,7 @@ pub fn list() {
         .filter(|interface| !interface.addr.is_empty())
     {
         let addrs = {
-            let mut addrs: Vec<_> = interface
-                .addr
-                .into_iter()
-                .map(|addr| addr.ip())
-                .filter(|addr| !is_local_address(addr))
-                .filter(|addr| bind_socket(*addr).is_ok())
-                .collect();
+            let mut addrs = get_valid_addresses(&interface.addr);
             addrs.sort_by_key(|addr| addr.is_ipv6());
             addrs
         };
@@ -50,26 +42,4 @@ pub fn list() {
     }
 
     println!("{}", table.render());
-}
-
-fn is_local_address(addr: &IpAddr) -> bool {
-    if addr.is_loopback() {
-        return true;
-    }
-
-    match addr {
-        IpAddr::V4(ip) => {
-            if ip.is_link_local() {
-                return true;
-            }
-        }
-        IpAddr::V6(ip) => {
-            // Check for link-local (fe80::/10)
-            if ip.segments()[0] & 0xffc0 == 0xfe80 {
-                return true;
-            }
-        }
-    }
-
-    false
 }

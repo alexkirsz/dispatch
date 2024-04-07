@@ -1,9 +1,9 @@
 use std::{net::IpAddr, str::FromStr};
 
+use clap::Parser;
 use debug::LogStrategy;
-use dispatcher::WeightedAddress;
+use dispatcher::{RawWeightedAddress, WeightedAddress};
 use eyre::Result;
-use structopt::StructOpt;
 
 mod debug;
 mod dispatcher;
@@ -12,36 +12,37 @@ mod net;
 mod server;
 mod socks;
 
-#[derive(Debug, StructOpt)]
 /// A proxy that balances traffic between multiple internet connections
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
 struct Opt {
     /// Write debug logs to stdout instead of a file
-    #[structopt(short, long)]
+    #[arg(short, long)]
     debug: bool,
-    #[structopt(subcommand)]
+    #[command(subcommand)]
     command: Command,
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Parser, Debug)]
 enum Command {
     /// Lists all available network interfaces
     List,
     /// Starts the SOCKS proxy server
     Start {
         /// Which IP to accept connections from
-        #[structopt(default_value = "127.0.0.1", long)]
+        #[arg(default_value = "127.0.0.1", long)]
         ip: IpAddr,
         /// Which port to listen to for connections
-        #[structopt(default_value = "1080", long)]
+        #[arg(default_value = "1080", long)]
         port: u16,
-        /// The network interface IP addresses to dispatch to, in the form of <address>[@priority]
-        #[structopt(required = true, parse(try_from_str = WeightedAddress::from_str))]
-        addresses: Vec<WeightedAddress>,
+        /// The network interface IP addresses to dispatch to, in the form of <address>[/priority]
+        #[arg(required = true, value_parser = RawWeightedAddress::from_str)]
+        addresses: Vec<RawWeightedAddress>,
     },
 }
 
 fn main() -> Result<()> {
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
 
     let _guard = debug::install(if opt.debug {
         LogStrategy::Stdout
@@ -55,7 +56,10 @@ fn main() -> Result<()> {
             ip,
             port,
             addresses,
-        } => server::server(ip, port, addresses)?,
+        } => {
+            let addresses = WeightedAddress::resolve(addresses)?;
+            server::server(ip, port, addresses)?
+        }
     }
 
     Ok(())
