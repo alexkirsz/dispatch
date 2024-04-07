@@ -105,10 +105,6 @@ pub enum LogStrategy {
 }
 
 pub fn install(log_strategy: LogStrategy) -> Result<Option<WorkerGuard>> {
-    use sysinfo::{System, SystemExt};
-
-    let sys = System::new_all();
-
     std::env::set_var("RUST_LIB_BACKTRACE", "full");
 
     let shared_log_path = Arc::new(Mutex::new(None));
@@ -116,7 +112,10 @@ pub fn install(log_strategy: LogStrategy) -> Result<Option<WorkerGuard>> {
     color_eyre::config::HookBuilder::default()
         .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new"))
         .add_issue_metadata("Version", env!("CARGO_PKG_VERSION"))
-        .add_issue_metadata("OS", sys.long_os_version().unwrap_or("Unknown".into()))
+        .add_issue_metadata(
+            "OS",
+            sysinfo::System::long_os_version().unwrap_or("Unknown".into()),
+        )
         .add_issue_metadata("Command", std::env::args().collect::<Vec<_>>().join(" "))
         .panic_message(DispatchPanicMessage {
             log_path: Arc::clone(&shared_log_path),

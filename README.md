@@ -50,43 +50,34 @@ The possibilities are endless:
 
 ```
 $ dispatch
+A SOCKS proxy that balances traffic between network interfaces.
 
-  dispatch 0.1.0
-  A proxy that balances traffic between multiple internet connections
+Usage: dispatch [OPTIONS] <COMMAND>
 
-  USAGE:
-      dispatch [FLAGS] <SUBCOMMAND>
+Commands:
+  list   Lists all available network interfaces
+  start  Starts the SOCKS proxy server
+  help   Print this message or the help of the given subcommand(s)
 
-  FLAGS:
-      -d, --debug      Write debug logs to stdout instead of a file
-      -h, --help       Prints help information
-      -V, --version    Prints version information
-
-  SUBCOMMANDS:
-      help     Prints this message or the help of the given subcommand(s)
-      list     Lists all available network interfaces
-      start    Starts the SOCKS proxy server
+Options:
+  -d, --debug    Write debug logs to stdout instead of a file
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 ```
 $ dispatch start -h
+Starts the SOCKS proxy server
 
-  dispatch-start 0.1.0
-  Starts the SOCKS proxy server
+Usage: dispatch start [OPTIONS] <ADDRESSES>...
 
-  USAGE:
-      dispatch start [OPTIONS] <addresses>...
+Arguments:
+  <ADDRESSES>...  The network interface IP addresses to dispatch to, in the form of <address>[/priority]
 
-  FLAGS:
-      -h, --help       Prints help information
-      -V, --version    Prints version information
-
-  OPTIONS:
-          --ip <ip>        Which IP to accept connections from [default: 127.0.0.1]
-          --port <port>    Which port to listen to for connections [default: 1080]
-
-  ARGS:
-      <addresses>...    The network interface IP addresses to dispatch to, in the form of <address>[@priority]
+Options:
+      --ip <IP>      Which IP to accept connections from [default: 127.0.0.1]
+      --port <PORT>  Which port to listen to for connections [default: 1080]
+  -h, --help         Print help
 ```
 
 ## Examples
@@ -104,7 +95,7 @@ $ dispatch start 10.0.0.0 fdaa:bbcc:ddee:0:1:2:3:4
 Dispatch incoming connections to local addresses `10.0.0.0` and `fdaa:bbcc:ddee:0:1:2:3:4`.
 
 ```
-$ dispatch start 10.0.0.0@7 10.0.0.1@3
+$ dispatch start 10.0.0.0/7 10.0.0.1/3
 ```
 
 Dispatch incoming connections to `10.0.0.0` 7 times out of 10 and to `10.0.0.1` 3 times out of 10.
