@@ -95,7 +95,7 @@ $ dispatch start 10.0.0.0 fdaa:bbcc:ddee:0:1:2:3:4
 Dispatch incoming connections to local addresses `10.0.0.0` and `fdaa:bbcc:ddee:0:1:2:3:4`.
 
 ```
-$ dispatch start 10.0.0.0/7 10.0.0.1/3
+$ dispatch start 10.0.0.0@7 10.0.0.1@3
 ```
 
 Dispatch incoming connections to `10.0.0.0` 7 times out of 10 and to `10.0.0.1` 3 times out of 10.
