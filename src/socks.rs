@@ -258,7 +258,7 @@ where
 
     #[instrument]
     async fn handle_request_v4(&mut self) -> Result<SocketAddr> {
-        let request = socksv5::v4::read_request(&mut self.reader).await?;
+        let request = socksv5::v4::read_request_skip_version(&mut self.reader).await?;
 
         match request.command {
             socksv5::v4::SocksV4Command::Connect => Ok(match request.host {
