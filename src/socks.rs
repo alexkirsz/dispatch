@@ -26,8 +26,7 @@ const HTTP_METHODS: [&str; 9] = [
 fn assert_supports_noauth(handshake: &SocksV5Handshake) -> Result<()> {
     if !handshake
         .methods
-        .iter()
-        .any(|m| *m == socksv5::v5::SocksV5AuthMethod::Noauth)
+        .contains(&socksv5::v5::SocksV5AuthMethod::Noauth)
     {
         Err(unsupported_auth_error())
     } else {

@@ -170,16 +170,16 @@ impl Display for WeightedAddress {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         match &self.interface {
             Interface::Named { name, ipv4, ipv6 } => {
-                f.write_fmt(format_args!("{}/{}", name, self.weight))?;
+                f.write_fmt(format_args!("{name}/{}", self.weight))?;
                 if let Some(ipv4) = ipv4 {
-                    f.write_fmt(format_args!(" ({})", ipv4))?;
+                    f.write_fmt(format_args!(" ({ipv4})"))?;
                 }
                 if let Some(ipv6) = ipv6 {
-                    f.write_fmt(format_args!(" ({})", ipv6))?;
+                    f.write_fmt(format_args!(" ({ipv6})"))?;
                 }
             }
             Interface::Ip(ip) => {
-                f.write_fmt(format_args!("{}/{}", ip, self.weight))?;
+                f.write_fmt(format_args!("{ip}/{}", self.weight))?;
             }
         }
         Ok(())
