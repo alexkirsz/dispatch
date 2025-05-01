@@ -39,7 +39,7 @@ permissions:
 on:
   push:
     tags:
-      - '*-?v[0-9]+*'
+      - "*-?v[0-9]+*"
 
 jobs:
   # Create the Github Release™ so the packages have something to be uploaded to
@@ -85,18 +85,18 @@ jobs:
       matrix:
         # For these target platforms
         include:
-        - os: ubuntu-20.04
-          dist-args: --artifacts=global
-          install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
-        - os: macos-11
-          dist-args: --artifacts=local --target=aarch64-apple-darwin --target=x86_64-apple-darwin
-          install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
-        - os: ubuntu-20.04
-          dist-args: --artifacts=local --target=x86_64-unknown-linux-gnu
-          install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
-        - os: windows-2019
-          dist-args: --artifacts=local --target=x86_64-pc-windows-msvc
-          install-dist: irm  https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.ps1 | iex
+          - os: ubuntu-24.04
+            dist-args: --artifacts=global
+            install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
+          - os: macos-11
+            dist-args: --artifacts=local --target=aarch64-apple-darwin --target=x86_64-apple-darwin
+            install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
+          - os: ubuntu-24.04
+            dist-args: --artifacts=local --target=x86_64-unknown-linux-gnu
+            install-dist: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.sh | sh
+          - os: windows-2019
+            dist-args: --artifacts=local --target=x86_64-pc-windows-msvc
+            install-dist: irm  https://github.com/axodotdev/cargo-dist/releases/download/v0.0.6/cargo-dist-installer.ps1 | iex
 
     runs-on: ${{ matrix.os }}
     env:
