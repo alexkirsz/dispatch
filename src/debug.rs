@@ -17,7 +17,7 @@ struct DispatchPanicMessage {
 impl PanicMessage for DispatchPanicMessage {
     fn display(
         &self,
-        pi: &std::panic::PanicInfo<'_>,
+        pi: &std::panic::PanicHookInfo<'_>,
         f: &mut std::fmt::Formatter<'_>,
     ) -> std::fmt::Result {
         use owo_colors::OwoColorize;
