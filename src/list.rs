@@ -28,16 +28,18 @@ pub fn list() {
         }
 
         table.add_row(Row::new(vec![
-            TableCell::new_with_alignment(interface.name.bold(), 1, Alignment::Right),
-            TableCell::new_with_alignment(
+            TableCell::builder(interface.name.bold())
+                .col_span(1)
+                .alignment(Alignment::Right),
+            TableCell::builder(
                 addrs
                     .iter()
                     .map(ToString::to_string)
                     .collect::<Vec<_>>()
                     .join("\n"),
-                1,
-                Alignment::Left,
-            ),
+            )
+            .col_span(1)
+            .alignment(Alignment::Left),
         ]));
     }
 
